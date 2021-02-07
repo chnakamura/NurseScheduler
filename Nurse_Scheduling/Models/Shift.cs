@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nurse_Scheduling.Models
 {
@@ -31,7 +32,7 @@ namespace Nurse_Scheduling.Models
         {
             DayOfWeek dayOfWeek = (DayOfWeek) (Id / 2);
             var nightOrDay = Id % 2 == 0 ? "Day" : "Night";
-            return $@"{dayOfWeek} {nightOrDay}: {string.Join(',', this.Nurses)}";
+            return $@"{dayOfWeek} {nightOrDay}: {string.Join(',', this.Nurses.OrderBy(n => n.Id).ToList())}";
         }
 
         public void Assign(Nurse nurse)

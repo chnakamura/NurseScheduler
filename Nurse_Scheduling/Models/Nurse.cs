@@ -118,11 +118,11 @@ namespace Nurse_Scheduling.Models
             {
                 if (this.Shifts.ContainsKey(shift.Key + 1))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }
