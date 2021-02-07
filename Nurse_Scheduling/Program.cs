@@ -6,14 +6,13 @@ namespace Nurse_Scheduling
     {
         static void Main(string[] args)
         {
-            var assignment = InputGenerator.GererateInputs();
-            Console.Write("Input:\n");
-            Console.Write(assignment);
-            Console.Write("------");
-            PhaseOne.Run(ref assignment, 20);
-            PhaseTwo.Run(ref assignment);
-            Console.Write("Output:\n");
-            Console.Write(assignment);
+            var population = InputGenerator.GererateInputs(2);
+            Console.WriteLine("Input:");
+            Console.WriteLine(population.BestAssignment);
+            Console.WriteLine("------");
+            Algorithm.Run(population);
+            Console.WriteLine("Output:");
+            Console.WriteLine(population.BestAssignment);
         }
     }
 }

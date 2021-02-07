@@ -8,23 +8,33 @@ namespace Nurse_Scheduling
 {
     public class InputGenerator
     {
-        public static Assignment GererateInputs()
+        public static Population GererateInputs(int minNursesPerShift, int populationSize = 2)
         {
-            var nurses = GetNurses(7);
+            var asssignments = new List<Assignment>();
 
-            // Assign each nurse subsequent shifts
-            for (var i = 0; i < 7; i++)
-            {  
-                nurses[i].Assign(new List<Shift>
-                {
-                    new Shift(2*i),
-                    new Shift(2*i+1)
-                });
+            for (var i = 0; i < populationSize; i++)
+            {
+                asssignments.Add(GetAssignment(minNursesPerShift));
             }
 
-            var shifts = nurses.SelectMany(nurse => nurse.Shifts).ToList();
+            return new Population(asssignments);
+        }
 
-            return new Assignment(nurses, shifts, 1.0);
+        private static Assignment GetAssignment(int minNursesPerShift)
+        {
+            var nurses = GetNurses(7 * minNursesPerShift);
+
+            var shifts = Enumerable.Range(0, 14).Select(id => new Shift(id, minNursesPerShift)).ToList();
+
+            var shiftId = 0;
+            
+            foreach (var nurse in nurses)
+            {
+                nurse.Assign(shifts[shiftId++ % shifts.Count]);
+                nurse.Assign(shifts[shiftId++ % shifts.Count]);
+            }
+
+            return new Assignment(nurses, shifts);
         }
 
         private static List<Nurse> GetNurses(int numNurses)
@@ -32,7 +42,7 @@ namespace Nurse_Scheduling
             var nurses = new List<Nurse>();
             for (var i = 0; i < numNurses; i++)
             {
-                nurses.Add(new Nurse(new List<Shift>()));
+                nurses.Add(new Nurse(new List<Shift>(), i));
             }
             return nurses;
         }

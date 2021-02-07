@@ -6,12 +6,27 @@ namespace Nurse_Scheduling.Models
 {
     public class Nurse
     {
-        public Nurse(List<Shift> shifts)
+        public Nurse(List<Shift> shifts, int id)
         {
-            this.Shifts = shifts;
+            this.Shifts = new HashSet<Shift>(shifts);
+            this.Id = id;
         }
 
-        public List<Shift> Shifts;
+        public static Nurse NurseCopier(Nurse nurse)
+        {
+            var shifts = nurse.Shifts.Select(shift => new Shift(shift.Id, shift.MinNurses)).ToList();
+            var newNurse = new Nurse(shifts, nurse.Id);
+
+            foreach (var shift in newNurse.Shifts)
+            {
+                shift.Assign(newNurse);
+            }
+
+            return newNurse;
+        }
+
+        public ISet<Shift> Shifts;
+        public int Id;
 
         /// <summary>
         /// - Each nurse should work at most one shift per day
@@ -19,55 +34,89 @@ namespace Nurse_Scheduling.Models
         /// TODO - Allow each nurse to define their own cost function!
         /// </summary>
         /// <returns></returns>
-        public double Score()
+        public double Weight()
         {
-            var score = 0;
+            var weight = 0;
 
-            score += this.Shifts.Any() ? 1 : -1;
+            if (!this.Shifts.Any())
+            {
+                weight += 1;
+            }
 
-            score += this.Shifts.Count < 3 ? 1 : -1;
+            if (this.Shifts.Count >= 3)
+            {
+                weight += 1;
+            }
 
-            var maxShiftsInRow = this.MaxShiftsInRow();
-            score += maxShiftsInRow == 1 ? 1 : -maxShiftsInRow;
+            if (this.MaxShiftsInRow() > 1)
+            {
+                weight += 1;
+            }
 
-            return score;
+            return weight;
         }
 
-        public List<Shift> UnAssign(int minId, int maxId)
+        public List<Shift> UnassignRange(int minId, int maxId)
         {
-            var unAssignedShifts = this.Shifts
-                .Where(shift => shift.id >= minId && shift.id <= maxId)
+            var shiftsToUnassign = this.Shifts
+                .Where(shift => shift.Id >= minId && shift.Id <= maxId)
                 .ToList();
 
-            unAssignedShifts.ForEach(shift => shift.Unassign(this));
+            foreach (var shiftToUnassign in shiftsToUnassign)
+            {
+                this.Unassign(shiftToUnassign);
+            }
 
-            this.Shifts = this.Shifts
-                .Where(shift => !(shift.id >= minId && shift.id <= maxId))
-                .ToList();
-
-            return unAssignedShifts;
+            return shiftsToUnassign;
         }
 
-        public void Assign(List<Shift> shifts)
+        public void Assign(Shift shift)
         {
-            shifts.ForEach(shift => shift.Assign(this));
-            this.Shifts.AddRange(shifts);
+            var wasAdded = this.Shifts.Add(shift);
+
+            if (!wasAdded)
+            {
+                throw new Exception();
+            }
+
+            shift.Assign(this);
+        }
+
+        public void Unassign(Shift shift)
+        {
+            var wasRemoved = this.Shifts.Remove(shift);
+
+            if (!wasRemoved)
+            {
+                throw new Exception();
+            }
+
+            shift.Unassign(this);
+        }
+
+        public void UnassignAll()
+        {
+            foreach (var shift in Shifts)
+            {
+                shift.Unassign(this);
+            }
+            this.Shifts = new HashSet<Shift>();
         }
 
         public override string ToString()
         {
-            return $@"Nurse Shifts: {string.Join(',', this.Shifts)}";
+            return $@"{this.Id}";
         }
 
         private int MaxShiftsInRow()
         {
-            return this.Shifts.OrderBy(s => s.id).Aggregate(new
+            return this.Shifts.OrderBy(s => s.Id).Aggregate(new
             {
                 maxEndingHere = 0,
                 max = 0,
                 prev = (Shift) null
             }, (memo, curr) => {
-                var maxEndingHere = memo.prev != null && memo.prev.id == curr.id - 1
+                var maxEndingHere = memo.prev != null && memo.prev.Id == curr.Id - 1
                     ? memo.maxEndingHere + 1
                     : 1;
 

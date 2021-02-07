@@ -7,47 +7,51 @@ namespace Nurse_Scheduling.Models
     {
         public Shift(int id, int minNurses = 1)
         {
-            this.id = id;
+            this.Id = id;
             this.MinNurses = minNurses;
-            this.Nurses = new List<Nurse>();
+            this.Nurses = new HashSet<Nurse>();
         }
 
-        public int id;
+        public int Id;
         public int MinNurses;
 
-        IList<Nurse> Nurses;
+        ISet<Nurse> Nurses;
 
         /// <summary>
         /// - All shift type demands during the planning period must be met
         /// - The shift coverage requirements must be fulfilled
         /// </summary>
         /// <returns></returns>
-        public double Score()
+        public double Weight()
         {
-            return Math.Min(this.MinNurses, this.Nurses.Count - this.MinNurses);
+            return this.Nurses.Count < this.MinNurses ? 1 : 0; 
         }
 
         public override string ToString()
         {
-            DayOfWeek dayOfWeek = (DayOfWeek) (id / 2);
-            var nightOrDay = id % 2 == 0 ? "Day" : "Night";
-
-            return $@"{dayOfWeek} {nightOrDay}";
+            DayOfWeek dayOfWeek = (DayOfWeek) (Id / 2);
+            var nightOrDay = Id % 2 == 0 ? "Day" : "Night";
+            return $@"{dayOfWeek} {nightOrDay}: {string.Join(',', this.Nurses)}";
         }
 
         public void Assign(Nurse nurse)
         {
-            this.Nurses.Add(nurse);
+            var wasAdded = this.Nurses.Add(nurse);
+
+            if (!wasAdded)
+            {
+                throw new Exception();
+            }
         }
 
         public void Unassign(Nurse nurse)
         {
-            if (!this.Nurses.Contains(nurse))
+            var wasRemoved = this.Nurses.Remove(nurse);
+
+            if (!wasRemoved)
             {
                 throw new Exception();
             }
-
-            this.Nurses.Remove(nurse);
         }
     }
 }

@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/Nurse_Scheduling.csproj": {}
+    "C:\\Users\\Chris\\Documents\\GitHub\\NurseScheduler\\Nurse_Scheduling\\Nurse_Scheduling.csproj": {}
   },
   "projects": {
-    "/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/Nurse_Scheduling.csproj": {
+    "C:\\Users\\Chris\\Documents\\GitHub\\NurseScheduler\\Nurse_Scheduling\\Nurse_Scheduling.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/Nurse_Scheduling.csproj",
+        "projectUniqueName": "C:\\Users\\Chris\\Documents\\GitHub\\NurseScheduler\\Nurse_Scheduling\\Nurse_Scheduling.csproj",
         "projectName": "Nurse_Scheduling",
-        "projectPath": "/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/Nurse_Scheduling.csproj",
-        "packagesPath": "/Users/chris/.nuget/packages/",
-        "outputPath": "/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/",
+        "projectPath": "C:\\Users\\Chris\\Documents\\GitHub\\NurseScheduler\\Nurse_Scheduling\\Nurse_Scheduling.csproj",
+        "packagesPath": "C:\\Users\\Chris\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chris\\Documents\\GitHub\\NurseScheduler\\Nurse_Scheduling\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/chris/.config/NuGet/NuGet.Config"
+          "C:\\Users\\Chris\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -52,7 +54,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
