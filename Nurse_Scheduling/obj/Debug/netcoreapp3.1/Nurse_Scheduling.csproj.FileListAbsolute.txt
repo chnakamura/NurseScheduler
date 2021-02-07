@@ -1,0 +1,12 @@
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.csprojAssemblyReference.cache
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.AssemblyInfoInputs.cache
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.AssemblyInfo.cs
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.csproj.CoreCompileInputs.cache
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/bin/Debug/netcoreapp3.1/Nurse_Scheduling.deps.json
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/bin/Debug/netcoreapp3.1/Nurse_Scheduling.runtimeconfig.json
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/bin/Debug/netcoreapp3.1/Nurse_Scheduling.runtimeconfig.dev.json
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/bin/Debug/netcoreapp3.1/Nurse_Scheduling.dll
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/bin/Debug/netcoreapp3.1/Nurse_Scheduling.pdb
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.dll
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.pdb
+/Users/chris/Developer/NurseScheduling/Nurse_Scheduling/Nurse_Scheduling/obj/Debug/netcoreapp3.1/Nurse_Scheduling.genruntimeconfig.cache

@@ -1,0 +1,41 @@
+﻿<Properties StartupConfiguration="{48E46805-0781-48E3-AB17-4166168D7D0B}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Nurse_Scheduling/Models/Nurse.cs">
+    <Files>
+      <File FileName="Nurse_Scheduling/PhaseOne.cs" Line="49" Column="42" />
+      <File FileName="Nurse_Scheduling/Models/Shift.cs" Line="28" Column="1" />
+      <File FileName="Nurse_Scheduling/Program.cs" Line="14" Column="13" />
+      <File FileName="Nurse_Scheduling/Models/Assignment.cs" Line="28" Column="70" />
+      <File FileName="Nurse_Scheduling/InputGenerator.cs" Line="1" Column="1" />
+      <File FileName="Nurse_Scheduling/PhaseTwo.cs" Line="41" Column="43" />
+      <File FileName="Nurse_Scheduling/Models/Nurse.cs" Line="36" Column="1" NotebookId="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Nurse_Scheduling" expanded="True">
+            <Node name="Nurse_Scheduling" expanded="True">
+              <Node name="Models" expanded="True">
+                <Node name="Nurse.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>assignment.Nurses.Sum(n =&gt; n.Score())</Value>
+          <Value>assignment.Shifts.Sum(s =&gt; s.Score())</Value>
+          <Value>assignment</Value>
+          <Value>Math.Min(this.MinNurses, this.Nurses.Count - this.MinNurses)</Value>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Nurse__Scheduling PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
