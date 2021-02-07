@@ -6,18 +6,21 @@ namespace Nurse_Scheduling.Models
 {
     public class Nurse
     {
-        public Nurse(List<Shift> shifts, int id)
+        private static Random random = new Random(0);
+
+        public Nurse(Dictionary<int, Shift> shifts, int id, HashSet<int> unwantedShifts)
         {
-            this.Shifts = new HashSet<Shift>(shifts);
+            this.Shifts = shifts;
             this.Id = id;
+            this.UnwantedShifts = unwantedShifts;
         }
 
         public static Nurse NurseCopier(Nurse nurse)
         {
-            var shifts = nurse.Shifts.Select(shift => new Shift(shift.Id, shift.MinNurses)).ToList();
-            var newNurse = new Nurse(shifts, nurse.Id);
+            var shifts = nurse.Shifts.ToDictionary(shift => shift.Key, shift => new Shift(shift.Value.Id, shift.Value.MinNurses));
+            var newNurse = new Nurse(shifts, nurse.Id, nurse.UnwantedShifts);
 
-            foreach (var shift in newNurse.Shifts)
+            foreach (var shift in newNurse.Shifts.Values)
             {
                 shift.Assign(newNurse);
             }
@@ -25,7 +28,8 @@ namespace Nurse_Scheduling.Models
             return newNurse;
         }
 
-        public ISet<Shift> Shifts;
+        public HashSet<int> UnwantedShifts;
+        public Dictionary<int, Shift> Shifts;
         public int Id;
 
         /// <summary>
@@ -34,23 +38,28 @@ namespace Nurse_Scheduling.Models
         /// TODO - Allow each nurse to define their own cost function!
         /// </summary>
         /// <returns></returns>
-        public double Weight()
+        public int Weight()
         {
             var weight = 0;
 
+            if (this.TwoShiftsInARow())
+            {
+                weight += Algorithm.HARD_CONSTRAINT_MULTIPLIER;
+            }
+
             if (!this.Shifts.Any())
             {
-                weight += 1;
+                weight += Algorithm.SOFT_CONSTRAINT_MULTIPLIER;
             }
 
             if (this.Shifts.Count >= 3)
             {
-                weight += 1;
+                weight += Algorithm.SOFT_CONSTRAINT_MULTIPLIER;
             }
 
-            if (this.MaxShiftsInRow() > 1)
+            if (this.Shifts.Keys.Intersect(this.UnwantedShifts).Any())
             {
-                weight += 1;
+                weight += Algorithm.SOFT_CONSTRAINT_MULTIPLIER;
             }
 
             return weight;
@@ -58,7 +67,7 @@ namespace Nurse_Scheduling.Models
 
         public List<Shift> UnassignRange(int minId, int maxId)
         {
-            var shiftsToUnassign = this.Shifts
+            var shiftsToUnassign = this.Shifts.Values
                 .Where(shift => shift.Id >= minId && shift.Id <= maxId)
                 .ToList();
 
@@ -72,19 +81,14 @@ namespace Nurse_Scheduling.Models
 
         public void Assign(Shift shift)
         {
-            var wasAdded = this.Shifts.Add(shift);
-
-            if (!wasAdded)
-            {
-                throw new Exception();
-            }
+            this.Shifts.Add(shift.Id, shift);
 
             shift.Assign(this);
         }
 
         public void Unassign(Shift shift)
         {
-            var wasRemoved = this.Shifts.Remove(shift);
+            var wasRemoved = this.Shifts.Remove(shift.Id);
 
             if (!wasRemoved)
             {
@@ -96,11 +100,11 @@ namespace Nurse_Scheduling.Models
 
         public void UnassignAll()
         {
-            foreach (var shift in Shifts)
+            foreach (var shift in Shifts.Values)
             {
                 shift.Unassign(this);
             }
-            this.Shifts = new HashSet<Shift>();
+            this.Shifts = new Dictionary<int, Shift>();
         }
 
         public override string ToString()
@@ -108,27 +112,17 @@ namespace Nurse_Scheduling.Models
             return $@"{this.Id}";
         }
 
-        private int MaxShiftsInRow()
+        private bool TwoShiftsInARow()
         {
-            return this.Shifts.OrderBy(s => s.Id).Aggregate(new
+            foreach (var shift in this.Shifts)
             {
-                maxEndingHere = 0,
-                max = 0,
-                prev = (Shift) null
-            }, (memo, curr) => {
-                var maxEndingHere = memo.prev != null && memo.prev.Id == curr.Id - 1
-                    ? memo.maxEndingHere + 1
-                    : 1;
-
-                var max = Math.Max(memo.max, maxEndingHere);
-
-                return new
+                if (this.Shifts.ContainsKey(shift.Key + 1))
                 {
-                    maxEndingHere,
-                    max,
-                    prev = curr
-                };
-            }).max;
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

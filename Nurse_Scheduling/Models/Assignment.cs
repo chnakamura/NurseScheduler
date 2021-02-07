@@ -25,7 +25,7 @@ namespace Nurse_Scheduling.Models
         /// TODO - Add the option to do average, minmax, or other?
         /// </summary>
         /// <returns></returns>
-        public double Weight()
+        public int Weight()
         {
             var nurseScore = this.Nurses.Sum(nurse => nurse.Weight());
             var shiftScore = this.Shifts.Sum(shift => shift.Weight());

@@ -37,12 +37,14 @@ namespace Nurse_Scheduling
             return new Assignment(nurses, shifts);
         }
 
-        private static List<Nurse> GetNurses(int numNurses)
+        private static List<Nurse> GetNurses(int numNurses, int seed = 0)
         {
+            var random = new Random(seed);
             var nurses = new List<Nurse>();
             for (var i = 0; i < numNurses; i++)
             {
-                nurses.Add(new Nurse(new List<Shift>(), i));
+                // We assume for the start that each nurse has one or two shifts they don't want to work on.
+                nurses.Add(new Nurse(new Dictionary<int, Shift>(), i, new HashSet<int> { random.Next() % 14, random.Next() % 14 } ));
             }
             return nurses;
         }

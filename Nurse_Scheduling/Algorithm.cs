@@ -7,11 +7,20 @@ namespace Nurse_Scheduling
 {
     public class Algorithm
     {
+        public static int HARD_CONSTRAINT_MULTIPLIER = 100;
+        public static int SOFT_CONSTRAINT_MULTIPLIER = 1;
+
         private static Random random = new Random(0);
         private static double SWAP_PROBABILITY = .5;
 
         public static void Run(Population population)
         {
+            var start = new
+            {
+                weight = population.BestAssignment.Weight(),
+                time = DateTime.Now
+            };
+
             RunPhaseOne(population);
 
             var sortedAssignments = population.Assignments.OrderBy(assignment => assignment.Weight());
@@ -19,19 +28,18 @@ namespace Nurse_Scheduling
             var bestAssignment = sortedAssignments.First();
             var otherAssignments = sortedAssignments.Skip(1);
 
-            var bestAssignmentNurseMemo = bestAssignment.Nurses.ToDictionary(nurse => nurse.Id, nurse => nurse);
+            var bestAssignmentNurseMemo = bestAssignment.Nurses.ToDictionary(nurse => nurse.Id, 
+                nurse => nurse.Shifts.Values.Select(s => s.Id).ToList());
 
             foreach (var assignment in otherAssignments)
             {
-                var nurseMemo = assignment.Nurses.ToDictionary(nurse => nurse.Id, nurse => nurse);
                 var shiftMemo = assignment.Shifts.ToDictionary(shift => shift.Id, shift => shift);
 
                 foreach (var nurse in assignment.Nurses)
                 {
                     nurse.UnassignAll();
 
-                    var nurseToCopy = bestAssignmentNurseMemo[nurse.Id];
-                    var shiftsIdsToAssign = nurseToCopy.Shifts.Select(shift => shift.Id).ToList();
+                    var shiftsIdsToAssign = bestAssignmentNurseMemo[nurse.Id];
                     var shiftsToAssign = shiftsIdsToAssign.Select(id => shiftMemo[id]).ToList();
                     
                     foreach (var shift in shiftsToAssign)
@@ -42,16 +50,31 @@ namespace Nurse_Scheduling
             }
 
             RunPhaseTwo(population);
+
+            bestAssignment = population.BestAssignment;
+            var numShiftSlots = bestAssignment.Nurses.Select(n => n.Shifts.Count).Sum();
+
+            var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+            Console.WriteLine($@"RunCycle took {elapsed}ms to assign {bestAssignment.Nurses.Count} nurses to {numShiftSlots} shifts!");
         }
 
         public static void RunPhaseOne(Population population)
         {
             for (var i = 0; i < population.NumCycles; i++)
             {
+                var start = new
+                {
+                    weight = population.BestAssignment.Weight(),
+                    time = DateTime.Now
+                };
+
                 foreach (var assignment in population.Assignments)
                 {
                     SuccessiveSegmentSwapMutation(assignment);
                 }
+
+                var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+                Console.WriteLine($@"RunPhaseOne Cycle took {elapsed}ms, and improved weight from {start.weight} to {population.BestAssignment.Weight()}");
             }
         }
 
@@ -59,8 +82,17 @@ namespace Nurse_Scheduling
         {
             var numCycles = 0;
 
-            while (IsTerminationCriteriaMet(numCycles))
+            var bestFitness = population.BestAssignment.Weight();
+            var numCyclesWithoutImprovment = 0;
+
+            while (IsTerminationCriteriaMet(numCycles, numCyclesWithoutImprovment))
             {
+                var start = new
+                {
+                    weight = population.BestAssignment.Weight(),
+                    time = DateTime.Now
+                };
+
                 foreach (var assignment in population.Assignments)
                 {
                     SelectiveDaySwapMutation(assignment);
@@ -68,19 +100,38 @@ namespace Nurse_Scheduling
                     RandomSegmentSwapMutation(assignment);
                 }
                 numCycles++;
+
+                var newBestFitness = population.BestAssignment.Weight();
+                if (newBestFitness < bestFitness)
+                {
+                    numCyclesWithoutImprovment = 0;
+                    bestFitness = newBestFitness;
+                } else
+                {
+                    numCyclesWithoutImprovment++;
+                }
+
+                var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+                Console.WriteLine($@"RunPhaseTwo Cycle took {elapsed}ms, and improved weight from {start.weight} to {population.BestAssignment.Weight()}");
             }
         }
 
-        private static bool IsTerminationCriteriaMet(int numCycles)
+        private static bool IsTerminationCriteriaMet(int numCycles, int numCyclesWithoutImprovment)
         {
             /*If he/she chooses ―the total number of generations‖, next, he/she has to insert this number.
             2. If he/she chooses ―the total number of generations for which the fitness remains the same‖, next,
             he/she has to insert this number*/
-            return numCycles < 10;
+            return numCyclesWithoutImprovment < 1 && numCycles < 10;
         }
 
         private static void SelectiveDaySwapMutation(Assignment assignment)
         {
+            var start = new
+            {
+                weight = assignment.Weight(),
+                time = DateTime.Now
+            };
+
             foreach (var n1 in assignment.Nurses.OrderBy(n => random.Next()))
             {
                 foreach (var n2 in assignment.Nurses.Where(n => n != n1).OrderBy(n => random.Next()))
@@ -97,10 +148,19 @@ namespace Nurse_Scheduling
                     }
                 }
             }
+
+            var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+            Console.WriteLine($@"SelectiveDaySwapMutation took {elapsed}ms, and improved weight from {start.weight} to {assignment.Weight()}");
         }
 
         private static void RandomSegmentSwapMutation(Assignment assignment)
         {
+            var start = new
+            {
+                weight = assignment.Weight(),
+                time = DateTime.Now
+            };
+
             var parings = assignment.Nurses.OrderBy(n => random.Next())
                 .Join(assignment.Nurses.OrderBy(n => random.Next()), n => true,
                 n => true, (n1, n2) => new {
@@ -113,16 +173,28 @@ namespace Nurse_Scheduling
             {
                 SelectivePartialSwap(assignment, paring.n1, paring.n2);
             }
+
+            var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+            Console.WriteLine($@"RandomSegmentSwapMutation took {elapsed}ms, and improved weight from {start.weight} to {assignment.Weight()}");
         }
 
         public static void SuccessiveSegmentSwapMutation(Assignment assignment)
         {
+            var start = new
+            {
+                weight = assignment.Weight(),
+                time = DateTime.Now
+            };
+
             for (var n1 = 0; n1 < assignment.Nurses.Count; n1++)
             {
                foreach (var n2 in GetAdjacentNurses(assignment.Nurses, n1)) {
                     SelectivePartialSwap(assignment, assignment.Nurses[n1], assignment.Nurses[n2]);
                }
             }
+
+            var elapsed = (DateTime.Now - start.time).TotalMilliseconds;
+            Console.WriteLine($@"SuccessiveSegmentSwapMutation took {elapsed}ms, and improved weight from {start.weight} to {assignment.Weight()}");
         }
 
         private static List<int> GetAdjacentNurses(IReadOnlyList<Nurse> nurses, int i)
@@ -141,6 +213,11 @@ namespace Nurse_Scheduling
 
         public static void SelectivePartialSwap(Assignment assignment, Nurse n1, Nurse n2)
         {
+            var start = new
+            {
+                weight = assignment.Weight(),
+                time = DateTime.Now
+            };
 
             for (var d1 = 0; d1 < 14; d1 += 1)
             {

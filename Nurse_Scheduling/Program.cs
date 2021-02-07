@@ -6,7 +6,7 @@ namespace Nurse_Scheduling
     {
         static void Main(string[] args)
         {
-            var population = InputGenerator.GererateInputs(2);
+            var population = InputGenerator.GererateInputs(8);
             Console.WriteLine("Input:");
             Console.WriteLine(population.BestAssignment);
             Console.WriteLine("------");

@@ -22,9 +22,9 @@ namespace Nurse_Scheduling.Models
         /// - The shift coverage requirements must be fulfilled
         /// </summary>
         /// <returns></returns>
-        public double Weight()
+        public int Weight()
         {
-            return this.Nurses.Count < this.MinNurses ? 1 : 0; 
+            return this.Nurses.Count < this.MinNurses ? Algorithm.HARD_CONSTRAINT_MULTIPLIER : 0; 
         }
 
         public override string ToString()
