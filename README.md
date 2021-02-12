@@ -2,7 +2,7 @@
 I decided to work on this project when I learned from friends of mine who are nurses, that scheduling can be a huge pain point that requires a lot of manual work and almost always leaves people working on shifts they don't want to work on.  Scheduling nurses represents a significant challenge because the hospital is open 24/7 and has to be staffed at all times. However, nurses cannot work two shifts in a row because that would be 24 consecutive hours of work, which would be unsafe for both the patients and the staff.
 This is an implementation of a generic two-phase stochastic variable neighborhood approach to schedule nurses to shift. This is historically an np-hard problem, but researchers at the University of Western Greece released a very effective approximation algorithm that can find a near-optimal solution in quadratic time (rather than exponential time). You can read more about the research here
 The main goal of this project is to bridge the significant gap between the cutting edge of computer science research and what is actually implemented in a way that is accessible to the would-be users. 
-I have linked the Github repo because I have not had the chance to create a front-end for this app, but here is an output of it assigning 112 nurses to 224 shifts in just three minutes, with only a single nurse working a single shift they did not want to work.
+I have not had the chance to create a front-end for this app, but here is an output of it assigning 112 nurses to 224 shifts in just three minutes, with only a single nurse working a single shift they did not want to work.
 
 ```
 Input:
